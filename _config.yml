@@ -2,11 +2,11 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://dev.beeksiwaais.com
+url: http://vivid-flower-172.heroku.com/
 title: Beeksi Waais
 subtitle: Blog de dév.
 author: Beeksi Waais
-simple_search: http://google.com/search
+simple_search:
 
 # RSS / Email (optional) subscription links (change if using something like Feedburner)
 subscribe_rss: /atom.xml
