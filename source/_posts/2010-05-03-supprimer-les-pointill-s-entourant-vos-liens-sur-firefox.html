@@ -1,0 +1,19 @@
+---
+title: Supprimer les pointillés entourant vos liens sur Firefox
+layout: default
+tags:
+  - css
+
+type: regular
+---
+
+<p>Si vous détestez autant que moi ces petits pointillés qui s'affichent sur Firefox, vous êtes chanceux, voici la solution. Il s'agit d'un contour défini par la propriété CSS <code>outline</code> (contour en anglais bien sûr). Il existe a ma connaissance deux méthodes très simple à utiliser, la première consiste tout simplement à désactiver la propriété CSS <code>outline</code> sur toute votre page (vous pourrez toujours la redéfinir au besoin) : </p>&#13;
+<pre><code>a {&#13;
+  outline: none;&#13;
+}&#13;
+</code></pre>&#13;
+<p>Il existe une autre solution qui s'applique uniquement à Firefox, la propriété <code>-moz-outline-style</code> mais celle-ci n'est pas valide :</p>&#13;
+<pre><code>:focus {&#13;
+  -moz-outline-style: none;&#13;
+}</code></pre>&#13;
+<p>J'ai pris l'habitude d'utiliser la propriété <code>outline</code> plutôt que <br /><code>-moz-outline-style</code> et je l'ajoute toujours dans mon fichier CSS tout comme le <code>border : none</code> sur la balise <code>&lt;img&gt;</code>.</p> 

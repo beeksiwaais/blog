@@ -1,0 +1,47 @@
+---
+layout: post
+title: "Moteur De Recherche Solr Avec CodeIgniter (Jour 1)"
+date: 2011-08-15 11:28
+published: false
+comments: true
+categories: 
+---
+
+<p>Je travaille actuellement sur un plugin Codeigniter appelé Codeigniter-SearchEngine. L'objectif est d'apporter le moteur de recherche open-source Solr puis peut-être plus tard Sphinx à CodeIgniter.<br />
+
+Le plugin n'est pas encore stable (du moins la version actuellement disponible sur Github). Cependant vous pouvez expérimenter ce moteur de recherche avec vos projets CodeIgniter qui est bien plus efficace que les requêtes MySQL <code>LIKE</code></p>.
+
+<h2>Installation de Solr…</h2>
+Solr requiert Java 5 SDK (inclue dans Mac OS Leopard, Snow Leopard et Lion dispose de Java 6 SDK) vous pouvez vérifier la version installé avec la commande suivante :
+<pre><code>java -version</code></pre>
+
+Puis avec Homebrew
+<pre><code>brew install solr</code></pre>
+Après l'installation de Solr, vous pouvez trouver des exemples de configuration dans le dossier de Solr. Pour moi, la commande est la suivante :
+<pre><code>solr /usr/local/Cellar/solr/3.3.0/libexec/example/solr</code></pre>
+
+Vous devriez avoir accès à http://localhost:8983/solr/admin/. Dans le cas contraire vérifiez les logs qui s'affiche dans Terminal. Il s'agit simplement de vérifier que le serveur Solr est bien lancé. Lorqu'il faudrait concevoir l'application nous devrons rédiger nos propres fichiers de configuration.
+
+<h2>… puis sa configuration</h2>
+
+<p>Solr (ou plutôt Lucene) est particulièrement bien conçu et permet une configuration très poussé avec des fichiers XML. La configuration est propre à chaque projet, nous allons partir sur un exemple simple (que nous utiliserons par la suite quand nous passerons à CodeIgniter); imaginons un site qui référence des documents (on prendra des articles de Wikipédia pour les tests et des documents PDF). Chaque document dispose d'un titre, d'un auteur, d'une date de parution et du contenu du lui-même.</p>
+
+<p>Mais avant cela, jettons un oeil à la config que nous avions chargé pour vérifier que tout fonctionnait correctement. (<code>/usr/local/Cellar/solr/3.3.0/libexec/example/solr</code>). Il s'agit d'un dossier avec de nombreux fichiers mais celui qui nous intéresse pour le moment. c'est celui-ci :</p> 
+
+{% include_code solr/default_solr_schema.xml %}
+
+
+
+
+
+
+<h2>Installer l'extension PHP</h2>
+D'ici quel temps, le Apache_Solr_Service sera également disponible mais pour le moment le plugin requiert l'extension PECL <b>Solr</b>. Donc pour l'installer l'extension :
+<pre><code>pecl install solr
+</code></pre>
+
+Comme toute extension PHP, ajouté <code>extension=solr.so</code> à votre php.ini puis 
+<pre><code>(sudo) apachctl restart</code></pre>
+
+
+Solr et l'extension PHP sont maintenant installé. 

@@ -1,0 +1,17 @@
+---
+title: Corriger le défaut des border-radius sur webkit
+layout: default
+tags:
+  - css
+
+type: regular
+---
+
+<p><img src="http://media.tumblr.com/tumblr_l6wr91eqBt1qz6hvj.png" /></p>&#13;
+<p>I recently came up against an issue in Safari where the background colour of an element seemed to ‘bleed’ through the edge of the corners when applying both borders and a border-radius (see the image above). After seeing <a href="http://www.davidcole.me/">David Cole</a> <a href="http://twitter.com/irondavy/status/19112937191">tweet</a> about the same issue I resolved to find a solution, and it came in the form of the <a href="http://www.css3.info/preview/background-origin-and-background-clip/">-webkit-background-clip</a>property.</p>&#13;
+<pre><code>-webkit-background-clip: padding-box;&#13;
+</code></pre>&#13;
+<p class="last">It’s important to note that if you are using the shorthand notation to specify your other background properties then this should be added <strong>after</strong> those. It seems that the shorthand notation implies a default clip value which will override one that’s previously set. Your mileage may vary, but it worked a treat for me. Read more about the available values for the property <a href="http://www.css3.info/preview/background-origin-and-background-clip/">here</a>.</p>&#13;
+<h3>Source</h3>&#13;
+<ul><li><a href="http://tumble.sneak.co.nz/post/928998513/fixing-the-background-bleed">Sneak</a></li>&#13;
+</ul>

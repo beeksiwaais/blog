@@ -1,0 +1,35 @@
+---
+title: Installer et configurer Apache, MySQL et PHP5 sur Mac OS (Snow) Leopard
+layout: default
+tags:
+  - organisation
+
+type: regular
+---
+
+<p>Dans cet article nous allons installer MySQL. Étant donnée que PHP5 et Apache sont préinstallés dans (Snow) Leopard, il suffit de les configurer.</p>&#13;
+<p>Nous allons installer MySQL avec Homebrew. Si vous utilisez MacPorts, je vous conseille vivement d'y jetez un oeil. Il manque encore pas mal de "formula" notamment PHP5 mais Homebrew est plus rapide que MacPorts et bien plus simple. Si vous n'avez pas Homebrew installer sur votre mac : </p>&#13;
+<p><span> </span></p>&#13;
+<pre><code>ruby -e "$(curl -fsS http://gist.github.com/raw/323731/install_homebrew.rb)"</code></pre>&#13;
+<p>Une fois Homebrew installer, nous allons installez MySQL</p>&#13;
+<pre><code>brew install mysql</code></pre>&#13;
+<p>L'installation de MySQL peut être un peu longue. Une fois l'installation terminé, Homebrew vous propose des commandes pour lancer MySQL, sélectionnez celle qui vous convient. Il faut ensuite configurer MySQL. Pour ce faire lancer les commandes suivantes : </p>&#13;
+<pre>mysql_install_db</pre>&#13;
+<p>puis</p>&#13;
+<pre>mysql_secure_installation</pre>&#13;
+<p>MySQL est maintenant installé.Nous passons à la confugaration d'Apache pour activer PHP5.</p>&#13;
+<pre>sudo nano /etc/apache2/httpd.conf/</pre>&#13;
+<p>Cherchez la ligne <code>#LoadModule php5_module libexec/apache2/libphp5.so</code> et retirez le <code>#</code>. On enregistre le fichier (CTRL + X; puis Y puis ENTRER).</p>&#13;
+<p>Avant de lancer le serveur, il nous reste plus qu'a configurer PHP pour modifier les sockets utilisés qu'il utilise pour MySQL : </p>&#13;
+<pre>sudo cp /etc/php.ini.default /etc/php.ini</pre>&#13;
+<pre>sudo nano /etc/php.ini</pre>&#13;
+<p>On recherche tous les <code>/var/mysql/mysql.sock</code> pour les remplacer par <code>/tmp/mysql.sock</code>. Il devrait y en avoir 3 : PDO, MYSQLI et MYSQL.</p>&#13;
+<p>On enregistre et on lance (enfin) le serveur Apache dans Préférences Systèmes &gt; Partage. Vous pouvez également lancer le serveur avec la commande apachectl start.</p>&#13;
+<p>Pour vérifier que tout fonctionne, créez un fichier info.php dans le dossier Sites et ajoutez dans ce fichier la fonction phpinfo(). Vous devez y accèder avec l'URL  <span>http://localhost/~VOTRE-NOM-D'UTILISATEUR/info.php. </span></p>&#13;
+<p><span> </span>Voilà !! Je reviendrai sur Apache dans un autre article, on peut faire bien mieux que cela ! J'ai également un article sur phpMyAdmin dans les cartons.</p>&#13;
+<p>UPDATE : Avec la mise à jour de Mac OS 10.6.5, Apple a mise à jour Apache avec la version 2.2.5 et résolu des problèmes de sécurité. Malheureusement, un bug de la commande apachectl vous empêche de l'utiliser et vous affiche :</p>&#13;
+<p><span>/usr/sbin/apachectl: line 82: ulimit: open files: cannot modify limit: Invalid argument</span></p>&#13;
+<p><span><span>Pour résoudre le problème il suffit de remplacer la variable </span></span><span>ULIMIT_MAX_FILES="ulimit -S -n `ulimit -H -n`" <span>par </span></span><span>ULIMIT_MAX_FILES="".</span><span> </span></p>&#13;
+&#13;
+&#13;
+ 

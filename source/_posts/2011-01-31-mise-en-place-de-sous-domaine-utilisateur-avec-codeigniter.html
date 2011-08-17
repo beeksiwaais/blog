@@ -1,0 +1,48 @@
+---
+title: Mise en place de sous-domaine utilisateur avec CodeIgniter
+layout: default
+
+type: regular
+---
+
+<p>J'ai lu un article sur le site Nettuts il y a quelques mois qui proposait une solution pour mettre en place la gestion des sous-domaine utilisateur (ex: <em>utilisateurx.domaine.com</em>) avec le fameux framework CodeIgniter. L'article propose de bonnes solutions : vérification préalable de l'existance de l'utilisateur et <em>www.domaine.com</em> qui affiche les pages publiques du site.</p>&#13;
+<p>Plus précisément, l'auteur nous propose de vérifier à chaque requête HTTP l'existence de l'utilisateur. Malheureusement cette solution a un gros inconvénient, à chaque requête HTTP le script va effectuer au moins une requête SQL pour valider le sous-domaine, le coût d'un tel système sur un site à fort trafic peut devenir exorbitant.</p>&#13;
+<p>J'ai donc décidé de vous proposer une autre solution qui utilise les sessions. Le raisonnement est simple, si un utilisateur est loggé on peut en conclure que le sous-domaine est valide. On effectue ainsi une seule requête SQL pour valider un sous-domaine lorsque la page de connexion est appelée.</p>&#13;
+<p><strong>Prérequis</strong> : </p>&#13;
+<p><strong>Fichier</strong> : system/application/config/config.php<br /><strong>Objectif</strong> : Détecter le sous-domaine <br /><strong>Code</strong> :</p>&#13;
+<pre><code>...&#13;
+// Ajouté au fichier avec les autres paramètres de configuration de CodeIgniter&#13;
+&#13;
+$url = explode('.', $_SERVER['HTTP_HOST']);&#13;
+if($url[0] != "www" &amp;&amp; $url[1] == "domaine")&#13;
+{&#13;
+    $config['subdomain'] = $url[0];&#13;
+}&#13;
+</code></pre>&#13;
+<p>On "enregistre" le sous-domaine seulement s'il existe et seulement s'il est différent de <em>www. </em>Ainsi, les urls <em>www.domaine.com</em> et <em>domaine.com </em>ne seront pas prise en compte par l'application. On également modifier le code facilement pour prendre en compte plus d'un sous-domaine avec un tableau et la fonction <code>array_search()</code>.</p>&#13;
+<p><strong>Fichier</strong> : system/application/config/routing.php<br /><strong>Objectif</strong> : Charger le contrôleur en fonction du sous-domaine <br /><strong>Code</strong> :</p>&#13;
+<pre><code>$url = explode('.', $_SERVER['HTTP_HOST']);&#13;
+if($url[0] == "www" &amp;&amp; $url[1] == "domaine")&#13;
+{&#13;
+    // Site de présentation (hors application)&#13;
+    $route['default_controller'] = "accueil";&#13;
+    ...&#13;
+}&#13;
+else&#13;
+{&#13;
+    // Application&#13;
+    $route['default_controller'] = "accueil_application";&#13;
+    ...&#13;
+}&#13;
+</code></pre>&#13;
+<p>Ceci fonctionne de façon identique au code présenté plus haut pour le fichier config.php. Vous chargez directement le bon contrôleur et sans trop de peine mais le sous-domaine n'est pas encore validé. Pour cela, on crée un contrôleur "Application" qui se chargera des fonctions récurrentes aux contrôleurs de l'application</p>&#13;
+<p><strong>Fichier</strong> : system/application/controller/application.php<br /><strong>Objectif</strong> : Validation du sous-domaine<br /><strong>Code</strong> :</p>&#13;
+<pre><code>class Application extends Controller {&#13;
+   static protected function valid_subdomain() {&#13;
+      $this-&gt;load-&gt;model('application_model');&#13;
+      if($this-&gt;application_model-&gt;check_subdomain() == true) return TRUE;&#13;
+      else return FALSE;&#13;
+   }&#13;
+}&#13;
+</code></pre>&#13;
+<p>Ensuite, si le sous-domaine est valide on affiche la page de login (ou une autre page). le sous-domaine est disponible avec <code>$config['subdomain']</code>. Tout le reste dépend de votre application. Bon développement !</p> 
